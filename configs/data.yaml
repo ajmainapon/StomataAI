@@ -1,0 +1,8 @@
+path: /home/rmedu2026/stomataAI/baseline_data
+train: images/train
+val: images/valid
+test: images/test
+names:
+  0: stomata
+  1: guard
+  2: pore

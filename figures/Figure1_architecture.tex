@@ -1,0 +1,206 @@
+% ============================================================================
+%  Figure 1 -- Experimental and deep-learning workflow
+%  Benchmarking Deep-Learning Instance-Segmentation Models for Stomatal
+%  Phenotyping under Drought Stress in Chickpea (Cicer arietinum L.)
+%
+%  Compile:  pdflatex Figure1_architecture.tex
+%  Requires: figassets2/a_leaf.png  a_slide.png  a_gt.png  a_pred.png
+% ============================================================================
+
+\documentclass[10pt]{article}
+\usepackage[paperwidth=17.6cm,paperheight=8.15cm,margin=0.3cm]{geometry}
+\setlength{\topskip}{0pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\graphicspath{{figassets2/}}
+\pagestyle{empty}
+
+% ---------------------------------------------------------------- palette --
+\definecolor{ink}     {HTML}{191C21}
+\definecolor{muted}   {HTML}{6B7280}
+\definecolor{rule}    {HTML}{D2D7DE}
+\definecolor{softbg}  {HTML}{F6F8FA}
+\definecolor{accA}{HTML}{2F6B57}
+\definecolor{accB}{HTML}{2A6B84}
+\definecolor{accC}{HTML}{3A5F9E}
+\definecolor{accD}{HTML}{5A4E96}
+\definecolor{accE}{HTML}{834A6B}
+\definecolor{ctrlfg}  {HTML}{2C6BB0}
+\definecolor{ctrlbg}  {HTML}{EAF2FB}
+\definecolor{drtfg}   {HTML}{9A6414}
+\definecolor{drtbg}   {HTML}{FCF4E6}
+\definecolor{gcblue}  {HTML}{2077B4}
+\definecolor{poreorg} {HTML}{D2601A}
+\definecolor{bestfg}  {HTML}{2C6E4E}
+\definecolor{bestbg}  {HTML}{EEF5F1}
+
+% ------------------------------------------------------------------ fonts --
+\newcommand{\stg}   {\fontsize{7.4}{8.6}\selectfont\bfseries}
+\newcommand{\bdg}   {\fontsize{7.6}{8.4}\selectfont\bfseries}
+\newcommand{\bxt}   {\fontsize{7.6}{9}\selectfont\bfseries}
+\newcommand{\body}  {\fontsize{7.2}{9}\selectfont}
+\newcommand{\bodyb} {\fontsize{7.2}{9}\selectfont\bfseries}
+\newcommand{\capt}   {\fontsize{6.6}{8}\selectfont}
+\newcommand{\tbl}   {\fontsize{7.6}{9.2}\selectfont}
+\newcommand{\tblb}  {\fontsize{7.6}{9.2}\selectfont\bfseries}
+\newcommand{\tbh}   {\fontsize{7.0}{8.4}\selectfont}
+\newcommand{\fnt}   {\fontsize{6.5}{8}\selectfont}
+
+% ----------------------------------------------------------------- styles --
+\tikzset{
+  lbl/.style = {anchor=north west, inner sep=0pt, text=ink},
+  ctr/.style = {anchor=north,      inner sep=0pt, text=ink},
+  arr/.style = {draw=muted, line width=0.8pt, line cap=round,
+                -{Stealth[length=4.5pt,width=3.4pt,round]}},
+}
+
+\newcommand{\rimg}[5]{%
+  \begin{scope}
+    \clip[rounded corners=2.5pt] (#1,#2) rectangle ++(#3,-#4);
+    \node[anchor=north west, inner sep=0pt] at (#1,#2)
+      {\includegraphics[width=#3cm,height=#4cm]{#5}};
+  \end{scope}
+  \draw[rounded corners=2.5pt, draw=rule, line width=0.4pt]
+    (#1,#2) rectangle ++(#3,-#4);
+}
+
+\newcommand{\panel}[4]{%
+  \fill[white, rounded corners=4pt] (#1,0) rectangle ++(3.12,-4.70);
+  \fill[#2, rounded corners=4pt]    (#1,0) rectangle ++(3.12,-0.70);
+  \fill[#2]                          (#1,-0.55) rectangle ++(3.12,-0.15);
+  \draw[rounded corners=4pt, draw=#2!40, line width=0.5pt]
+    (#1,0) rectangle ++(3.12,-4.70);
+  \fill[white, rounded corners=2pt] (#1+0.16,-0.20) rectangle ++(0.32,-0.31);
+  \node[anchor=center, font=\bdg, text=#2] at (#1+0.32,-0.355) {#3};
+  \node[anchor=west, font=\stg, text=white] at (#1+0.60,-0.355) {#4};
+}
+
+\begin{document}%
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+\panel{0}    {accA}{1}{PLANT MATERIAL}
+\panel{3.47} {accB}{2}{IMPRESSION}
+\panel{6.94} {accC}{3}{ANNOTATION}
+\panel{10.41}{accD}{4}{MODEL TRAINING}
+\panel{13.88}{accE}{5}{EVALUATION}
+
+\foreach \x in {3.12,6.59,10.06,13.53}{ \draw[arr] (\x+0.06,-2.05) -- ++(0.23,0); }
+
+% ==========================================================================
+%  1 -- PLANT MATERIAL
+% ==========================================================================
+\draw[fill=ctrlbg, draw=ctrlfg!65, line width=0.5pt, rounded corners=3pt]
+  (0.18,-1.05) rectangle (2.94,-2.00);
+\node[ctr,font=\bxt, text=ctrlfg] at (1.56,-1.26) {CONTROL};
+\node[ctr,font=\body,text=ctrlfg] at (1.56,-1.62) {watered every 2 days};
+
+\draw[fill=drtbg, draw=drtfg!65, line width=0.5pt, rounded corners=3pt]
+  (0.18,-2.10) rectangle (2.94,-3.05);
+\node[ctr,font=\bxt, text=drtfg] at (1.56,-2.31) {DROUGHT STRESS};
+\node[ctr,font=\body,text=drtfg] at (1.56,-2.67) {no water for 15 days};
+
+\node[lbl,font=\bodyb] at (0.18,-3.52) {BARI Chola-5};
+\node[lbl,font=\body]  at (0.18,-3.90) {harvested at 30 days};
+
+% ==========================================================================
+%  2 -- LEAF IMPRESSION
+% ==========================================================================
+\rimg{3.57}{-1.15}{1.40}{1.60}{a_leaf.png}
+\rimg{5.05}{-1.15}{1.44}{1.60}{a_slide.png}
+\node[ctr,font=\capt,text=muted] at (4.27,-2.86) {sampling};
+\node[ctr,font=\capt,text=muted] at (5.77,-2.86) {impression};
+
+\node[lbl,font=\bodyb] at (3.65,-3.52) {nail-polish impression};
+\node[lbl,font=\body]  at (3.65,-3.90) {400$\times$, 600 images};
+
+% ==========================================================================
+%  3 -- ANNOTATION
+% ==========================================================================
+\rimg{7.18}{-1.05}{2.64}{2.00}{a_gt.png}
+
+\fill[gcblue, rounded corners=1.2pt]  (7.14,-3.68) rectangle ++(0.20,0.19);
+\node[lbl,font=\body] at (7.44,-3.49) {guard cells};
+\node[anchor=north east,font=\bodyb,text=gcblue] at (9.82,-3.49) {4,816};
+
+\fill[poreorg, rounded corners=1.2pt] (7.14,-4.06) rectangle ++(0.20,0.19);
+\node[lbl,font=\body] at (7.44,-3.87) {pores};
+\node[anchor=north east,font=\bodyb,text=poreorg] at (9.82,-3.87) {1,789};
+
+% ==========================================================================
+%  4 -- MODEL TRAINING
+% ==========================================================================
+\draw[fill=softbg, draw=rule, line width=0.5pt, rounded corners=3pt]
+  (10.59,-1.05) rectangle (13.69,-1.68);
+\node[ctr,font=\bodyb] at (12.14,-1.18) {YOLOv8s-seg};
+\node[ctr,font=\capt,text=muted] at (12.14,-1.45) {one-stage};
+
+\draw[fill=softbg, draw=rule, line width=0.5pt, rounded corners=3pt]
+  (10.59,-1.78) rectangle (13.69,-2.41);
+\node[ctr,font=\bodyb] at (12.14,-1.91) {YOLO26s-seg};
+\node[ctr,font=\capt,text=muted] at (12.14,-2.18) {one-stage};
+
+\draw[fill=softbg, draw=rule, line width=0.5pt, rounded corners=3pt]
+  (10.59,-2.51) rectangle (13.69,-3.14);
+\node[ctr,font=\bodyb] at (12.14,-2.64) {Mask R-CNN};
+\node[ctr,font=\capt,text=muted] at (12.14,-2.91) {two-stage, R50-FPN};
+
+\node[lbl,font=\bodyb] at (10.59,-3.52) {359 / 99 / 48 images};
+\node[lbl,font=\body]  at (10.59,-3.90) {same splits, seed 42};
+
+% ==========================================================================
+%  5 -- EVALUATION
+% ==========================================================================
+\rimg{14.12}{-1.05}{2.64}{2.00}{a_pred.png}
+
+\node[lbl,font=\bodyb] at (14.12,-3.52) {locked test set};
+\node[lbl,font=\body]  at (14.12,-3.90) {48 images, 676 masks};
+
+% ==========================================================================
+%  POOLED TEST-SET RESULTS
+% ==========================================================================
+\fill[white,  rounded corners=4pt] (0,-5.00) rectangle (17,-7.40);
+\fill[softbg, rounded corners=4pt] (0,-5.00) rectangle (17,-5.60);
+\fill[softbg] (0,-5.45) rectangle (17,-5.60);
+\fill[bestbg] (0.02,-6.06) rectangle (16.98,-6.52);
+\draw[rounded corners=4pt, draw=rule, line width=0.5pt] (0,-5.00) rectangle (17,-7.40);
+\draw[draw=rule, line width=0.4pt] (0,-5.60) -- (17,-5.60);
+
+\node[lbl,font=\tblb,text=muted] at (0.24,-5.16) {POOLED RESULTS};
+
+\foreach \i/\t in {0/{Box mAP@0.50}, 1/{Box mAP@0.50:0.95},
+                   2/{Mask mAP@0.50}, 3/{Mask mAP@0.50:0.95}}{
+  \node[ctr,font=\tbh,text=muted] at ({3.05+3.4875*\i+1.744},-5.20) {\t};
+}
+
+\node[lbl,font=\tblb] at (0.24,-5.73) {YOLOv8s-seg};
+\foreach \i/\v in {0/0.694, 1/0.488, 2/0.612, 3/0.391}{
+  \node[ctr,font=\tbl] at ({3.05+3.4875*\i+1.744},-5.71) {\v};
+}
+
+\node[lbl,font=\tblb,text=bestfg] at (0.24,-6.19) {YOLO26s-seg};
+\foreach \i/\v in {0/0.707, 1/0.511, 2/0.638}{
+  \node[ctr,font=\tblb,text=bestfg] at ({3.05+3.4875*\i+1.744},-6.17) {\v};
+}
+\node[ctr,font=\tbl] at ({3.05+3.4875*3+1.744},-6.17) {0.402};
+
+\node[lbl,font=\tblb] at (0.24,-6.65) {Mask R-CNN};
+\foreach \i/\v in {0/0.577, 1/0.436, 2/0.542}{
+  \node[ctr,font=\tbl] at ({3.05+3.4875*\i+1.744},-6.63) {\v};
+}
+\node[ctr,font=\tblb,text=bestfg] at ({3.05+3.4875*3+1.744},-6.63) {0.428};
+
+\draw[draw=rule, line width=0.4pt] (0.24,-6.98) -- (16.76,-6.98);
+\node[lbl,font=\fnt,text=muted] at (0.24,-7.08)
+  {Bold marks the highest observed value. Guard cells: mask AP 0.697--0.830\ \ \textbullet\ \ pores: 0.050--0.187.};
+
+\end{tikzpicture}
+\end{document}

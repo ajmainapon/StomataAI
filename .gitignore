@@ -1,0 +1,41 @@
+# ---- model weights (exceed GitHub's 100 MB per-file limit) -----------------
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# ---- dataset and imagery (not redistributed here; see README) --------------
+raw/
+baseline_data/
+figassets*/
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+
+# ---- run artefacts --------------------------------------------------------
+runs/
+# keep the small summaries under results/, drop the bulky per-checkpoint dumps
+results/**/pred_*.json
+results/**/ground_truth*.json
+results/**/predictions.json
+
+# ---- python ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ---- LaTeX build artefacts ------------------------------------------------
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# ---- os -------------------------------------------------------------------
+.DS_Store
+Thumbs.db
