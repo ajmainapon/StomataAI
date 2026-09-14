@@ -11,6 +11,7 @@
 # Each step logs to logs/queue/ and failures do not abort the queue.
 
 set -u
+REPO="$(cd "$(dirname "$0")/.." && pwd)"   # scripts live in this repo; runs write under the data root
 cd /home/rmedu2026/stomataAI
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate stomataai
@@ -30,7 +31,7 @@ for SEED in 42 43 44; do
   OUT=runs/maskrcnn_m640_s${SEED}
   if [ -f "$OUT/final.pt" ]; then note "skip $OUT (done)"; continue; fi
   note "Phase A: Mask R-CNN 480/640 augmented, seed $SEED"
-  python remote_mrcnn_train_v2.py \
+  python "$REPO/src/train_maskrcnn_matched.py" \
       --seed "$SEED" --min-size 480 --max-size 640 \
       --epochs 30 --batch 2 --out "$OUT" \
       > "$LOGS/mrcnn_m640_s${SEED}.log" 2>&1 \
@@ -68,7 +69,7 @@ done
 OUT=runs/maskrcnn_m1280_s42
 if [ ! -f "$OUT/final.pt" ]; then
   note "Phase C: Mask R-CNN 960/1280 augmented, seed 42"
-  python remote_mrcnn_train_v2.py \
+  python "$REPO/src/train_maskrcnn_matched.py" \
       --seed 42 --min-size 960 --max-size 1280 \
       --epochs 30 --batch 1 --out "$OUT" \
       > "$LOGS/mrcnn_m1280_s42.log" 2>&1 \
@@ -85,7 +86,7 @@ for RUN in runs/maskrcnn_m640_s42 runs/maskrcnn_m640_s43 runs/maskrcnn_m640_s44 
   esac
   for SPLIT in valid test; do
     note "Phase D: select/evaluate $RUN on $SPLIT"
-    python remote_mrcnn_select.py \
+    python "$REPO/src/select_maskrcnn_checkpoint.py" \
         --ckpt-dir "$RUN" --split "$SPLIT" --out "$RUN/selection" \
         --min-size "$MIN" --max-size "$MAX" \
         > "$LOGS/select_$(basename "$RUN")_${SPLIT}.log" 2>&1 \
