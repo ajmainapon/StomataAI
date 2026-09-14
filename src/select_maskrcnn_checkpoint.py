@@ -6,7 +6,7 @@ the epoch checkpoints saved during the original run are re-scored on the
 validation split.
 
 Usage:
-  python remote_mrcnn_select.py --split valid --out runs/maskrcnn/selection
+  python src/select_maskrcnn_checkpoint.py --split valid --out runs/maskrcnn/selection
 """
 from __future__ import annotations
 

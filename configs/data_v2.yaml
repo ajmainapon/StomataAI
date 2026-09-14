@@ -1,0 +1,10 @@
+# YOLO dataset config for the v2 (re-annotated, 512-image) dataset used in the
+# submitted manuscript. Built by src/data/build_v2_dataset.py.
+path: /home/rmedu2026/stomataAI/v2/data/yolo
+train: images/train
+val: images/valid
+test: images/test
+names:
+  0: stomata
+  1: guard
+  2: pore
