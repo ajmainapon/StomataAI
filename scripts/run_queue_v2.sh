@@ -32,15 +32,18 @@ note "raw=$STOMATA_RAW"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader | tee -a "$LOGS/queue.log"
 
 # --------------------------------------------------------------- Phase A0 --
-OUT=$RUNS/maskrcnn_orig800_s42
-if [ ! -f "$OUT/final.pt" ]; then
-  note "Phase A0: Mask R-CNN 800/1333, no augmentation, seed 42 (published config)"
+# Seeds 43 and 44 were run with this same command after seed 42; the loop
+# reproduces all three runs reported in the manuscript.
+for SEED in 42 43 44; do
+  OUT=$RUNS/maskrcnn_orig800_s${SEED}
+  if [ -f "$OUT/final.pt" ]; then note "skip $(basename $OUT) (done)"; continue; fi
+  note "Phase A0: Mask R-CNN 800/1333, no augmentation, seed $SEED (published config)"
   python "$REPO/src/train_maskrcnn_matched.py" \
-      --seed 42 --min-size 800 --max-size 1333 --no-augment \
+      --seed "$SEED" --min-size 800 --max-size 1333 --no-augment \
       --epochs 30 --batch 2 --workers 12 --out "$OUT" \
-      > "$LOGS/mrcnn_orig800_s42.log" 2>&1 \
+      > "$LOGS/mrcnn_orig800_s${SEED}.log" 2>&1 \
     && note "  ok" || note "  FAILED"
-else note "skip $(basename $OUT) (done)"; fi
+done
 
 # ---------------------------------------------------------------- Phase A --
 for SEED in 42 43 44; do
