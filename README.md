@@ -43,7 +43,7 @@ Pooled held-out test set (76 images, 1,152 instances), mean ± SD over seeds
 Class-specific mask AP@0.50:0.95 ranges from 0.701 to 0.817 for guard-cell
 complexes and from 0.045 to 0.172 for pores across models and treatments:
 pore segmentation, not the choice of architecture, is the limiting factor.
-The JSON holds every per-seed, per-treatment value behind Tables 2 and 3.
+The JSON holds every per-seed, per-treatment value behind Tables 4 and 5 and Fig. 6.
 
 ## Layout
 
@@ -58,7 +58,7 @@ src/
   train_maskrcnn_matched.py        Mask R-CNN training (resolution/augmentation flags,
                                    per-epoch checkpoints, configurable seed)
   select_maskrcnn_checkpoint.py    selects each Mask R-CNN run on validation mask AP
-  analysis/tables_v2_seeds.py      Tables 2-3: per-treatment AP, mean ± SD over seeds
+  analysis/tables_v2_seeds.py      Tables 4-5: per-treatment AP, mean ± SD over seeds
   train_maskrcnn_original.py       v1 Mask R-CNN training, as originally run
   eval_maskrcnn.py                 v1 COCOeval on the test set
   evaluate_by_treatment.py         v1 control / drought subset metrics
@@ -104,8 +104,8 @@ ultralytics 8.4.104 on a single RTX 4060 (8 GB).
    ```
 
    The runs reported in the paper are Phase B (`yolov8s_640_s{42,43,44}`,
-   `yolo26s_640_s{42,43,44}`; 640 px, up to 100 epochs, patience 30, best
-   validation mask mAP@0.50:0.95) and Phase A0 (`maskrcnn_orig800_s{42,43,44}`;
+   `yolo26s_640_s{42,43,44}`; 640 px, up to 100 epochs, patience 30,
+   Ultralytics `best.pt`) and Phase A0 (`maskrcnn_orig800_s{42,43,44}`;
    800/1333 px, no augmentation, 30 epochs, AdamW lr 2e-4, checkpoint selected
    on validation mask mAP@0.50:0.95 in Phase D). Phases A and C
    (matched-resolution and 1280 px runs) were exploratory and are not
@@ -121,8 +121,8 @@ ultralytics 8.4.104 on a single RTX 4060 (8 GB).
    ```
 
    Training curves, confusion matrices, PR/F1 curves, the qualitative montage
-   and the count comparison are per-run and use seed 42; Figure 8 and Tables
-   2-3 aggregate all three seeds.
+   and the count comparison are per-run and use seed 42; Fig. 6 and Tables
+   4-5 aggregate all three seeds.
 
 > **Paths are hard-coded** to the machine the reported runs were executed on
 > (`/home/rmedu2026/stomataAI`). Scripts are committed as they ran, for
@@ -131,10 +131,17 @@ ultralytics 8.4.104 on a single RTX 4060 (8 GB).
 
 ## Methodological notes
 
-**Checkpoint selection.** Every model, in every run, is evaluated at the
-checkpoint with the best validation mask mAP@0.50:0.95. For Mask R-CNN this
-lands at epochs 4, 14 and 17 of 30 for the three seeds, well before the end of
-training, so final-epoch evaluation would understate it.
+**Checkpoint selection.** YOLO runs are evaluated at Ultralytics `best.pt`,
+the epoch with the highest sum of validation box and mask mAP@0.50:0.95 (the
+default fitness in Ultralytics 8.4, which also drives early stopping). Mask
+R-CNN runs are evaluated at the epoch with the highest validation mask
+mAP@0.50:0.95, which lands at epochs 4, 14 and 17 of 30 for the three seeds,
+well before the end of training, so final-epoch evaluation would understate it.
+
+**YOLO optimizer.** The runs pass `optimizer=auto lr0=0.01`. With fewer than
+10,000 iterations, Ultralytics ignores `lr0` and uses AdamW with
+lr = 0.002 x 5 / (4 + nc) = 0.001429 (nc = 3, because `data_v2.yaml` also
+lists the empty `stomata` class), decaying linearly to 1% of that value.
 
 **Seeds.** Each architecture is trained with seeds 42, 43 and 44. Differences
 smaller than the reported standard deviations should not be read as
@@ -159,7 +166,8 @@ manuscript.**
 
 Per-run training logs (`results.csv`), Mask R-CNN checkpoint-selection records
 and the Figure 10 source data for the v2 runs are still on the training host
-and will be added under `results/v2/`.
+and will be added under `results/v2/`. The Figure 10 counts can be exported with
+`python figures/v2/export_fig10_counts.py` (per-image and per-plant CSVs).
 
 ## Citation
 
